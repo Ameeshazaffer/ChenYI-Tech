@@ -14,7 +14,6 @@ typedef struct{
 
 typedef struct{
    Animal **tableau; //voir si double pointeurs//
-   int* nb_total;
 }refuge;
 
 int menu(){
@@ -45,9 +44,9 @@ void rechercher_Animal(Animal **tableau, int taille ,char* nom , char* espece , 
       }else if(){
 
    }
-}
+}//Pas sur : comment faire plusieurs animaux ? commennt faire le type d'age ?//
 
-Animal** ajouter_Animal(Animal **tableau, int *taille,Animal a){
+Animal** ajouter_Animal(Animal **tableau, int *taille, Animal a){
 if((*taille+1) > 50){
    printf("Il n'y a plus de place dans le refuge.\n")
    return 1;
@@ -66,7 +65,7 @@ if((*taille+1) > 50){
 }
 
 
-Animal** enlever_Animal(Animal **tableau, int taille,int id){
+Animal** enlever_Animal(Animal **tableau, int *taille,int id){
    int indexe = -1;
    tableau = realloc(tableau,(*taille-1));
    for(int i = 0 ; i < taille ; i++){
@@ -84,6 +83,11 @@ Animal** enlever_Animal(Animal **tableau, int taille,int id){
    *taille--;
    return tableau;
 }
+
+
+
+1 compter le nb d'animaux d'une espece 
+1 compter le nb d'animaux d'une tranche d'age 
 
 
 int main{
