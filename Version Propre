@@ -81,7 +81,7 @@ if((*taille+1) >= 50){
 }else{
    tableau = realloc(tableau,(*taille+1)*sizeof(Animal*));
    tableau[*taille] = a;
-   *(taille++);
+   (*taille)++;
 }
    return tableau;
 }
@@ -108,7 +108,7 @@ Animal** enlever_Animal(Animal **tableau, int *taille,int id){
       }
    }
 
-   *(taille--);
+   (*taille)--;
    tableau = realloc(tableau,(*taille)*sizeof(Animal*));
    if(tableau == NULL){
       printf("Erreur d'allocation de la memoire./n");
