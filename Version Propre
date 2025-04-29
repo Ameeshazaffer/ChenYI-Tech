@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct{
+   int num_id;
+   char* nom;
+   char* espece;
+   int naissance;
+   float poids;
+   char* commentaire;
+}Animal;
+
+typedef struct{
+   Animal **tableau;
+}Refuge;
+
+int menu(){
+   int option;
+   printf("Veuillez choisir l'action a realiser.\n");
+   printf("1.Rechercher un/des animaux.\n");
+   printf("2.Ajouter un animal.\n");
+   printf("3.Adopter un animal.\n");
+   scanf("%d",&option);
+return option;
+}
+
+void afficher(Animal *a){
+   printf("ID: %d\n",a->num_id);
+   printf("NOM : %s\n",a->nom);
+   printf("ESPECE : %s\n",a->espece);
+   printf("DATE DE NAISSANCE : %d\n",a->naissance);
+   printf("POIDS : %.2f\n",a->poids);
+   printf("COMMENTAIRE : %s\n",a->commentaire);// faire cas ou y a pas de commentaire//
+}
+
+
+Animal constructeur(){
+Animal *a = (Animal*)malloc(sizeof(Animal));
+if(a == NULL){
+   printf("Erreur d'allocation de la memoire./n");
+   exit(1);
+}
+
+char buffer[256];
+printf("Veuillez saisir le numero d’identification:");
+scanf("%d",&a->num_id);
+
+printf("Veuillez saisir le nom:");
+getchar();
+fgets(buffer, 256, stdin);
+buffer[strcspn(buffer, "\n")] = '\0';
+a->nom = strdup(buffer);
+
+printf("Veuillez saisir l'espece:");
+getchar();
+fgets(buffer, 256, stdin);
+buffer[strcspn(buffer, "\n")] = '\0';
+a->espece = strdup(buffer);
+
+printf("Veuillez saisir l'annee de naissance:");
+scanf("%d",&a->naissance);
+
+printf("Veuillez saisir le poids:");
+scanf("%f",&a->poids);
+
+printf("Veuillez saisir un commentaire (optionnel):");
+getchar();
+fgets(buffer, 256, stdin);
+buffer[strcspn(buffer, "\n")] = '\0';
+a->commentaire = strdup(buffer);//Faire cas ou y a pas de commentaire//
+
+return a;
+}
+
+
+
+Animal** ajouter_Animal(Animal **tableau, int *taille, Animal *a){
+if((*taille+1) >= 50){
+   printf("Il n'y a plus de place dans le refuge.\n");
+}else{
+   tableau = realloc(tableau,(*taille+1)*sizeof(Animal*));
+   tableau[*taille] = a;
+   *(taille++);
+}
+   return tableau;
+}
+
+
+Animal** enlever_Animal(Animal **tableau, int *taille,int id){
+   int index = -1;
+
+   for(int i = 0 ; i < *taille ; i++){
+      if(tableau[i]->num_id == id){
+         index = i;
+         break;
+      }
+   }
+   if(index == -1){
+      printf("Cet animal n'a pas ete trouve.\n");
+   }else{
+      free(tableau[index]->nom);
+      free(tableau[index]->espece);
+      free(tableau[index]->commentaire);
+      free(tableau[index]);
+      for(int j = index ; j < (*taille-1) ; j++){
+         tableau[j] = tableau[j+1];
+      }
+   }
+
+   *(taille--);
+   tableau = realloc(tableau,(*taille)*sizeof(Animal*));
+   if(tableau == NULL){
+      printf("Erreur d'allocation de la memoire./n");
+      exit(1);
+   }
+   return tableau;
+}
