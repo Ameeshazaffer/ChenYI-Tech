@@ -7,8 +7,12 @@ typedef struct{
    char* nom;
    char* espece;
    int naissance;
+   int age;
    float poids;
    char* commentaire;
+   float quantites_nourriture;
+   int travail_journalier;
+   int travail_hedomadaire;
 }Animal;
 
 typedef struct{
@@ -35,6 +39,9 @@ void afficher(Animal *a){
 }
 
 
+
+
+
 Animal constructeur(){
 Animal *a = (Animal*)malloc(sizeof(Animal));
 if(a == NULL){
@@ -52,7 +59,7 @@ fgets(buffer, 256, stdin);
 buffer[strcspn(buffer, "\n")] = '\0';
 a->nom = strdup(buffer);
 
-printf("Veuillez saisir l'espece:");
+printf("Veuillez saisir l'espece(sans majuscule):");
 getchar();
 fgets(buffer, 256, stdin);
 buffer[strcspn(buffer, "\n")] = '\0';
@@ -60,6 +67,7 @@ a->espece = strdup(buffer);
 
 printf("Veuillez saisir l'annee de naissance:");
 scanf("%d",&a->naissance);
+a->age = 2025 - a->naissance;
 
 printf("Veuillez saisir le poids:");
 scanf("%f",&a->poids);
@@ -68,10 +76,31 @@ printf("Veuillez saisir un commentaire (optionnel):");
 getchar();
 fgets(buffer, 256, stdin);
 buffer[strcspn(buffer, "\n")] = '\0';
-a->commentaire = strdup(buffer);//Faire cas ou y a pas de commentaire//
+a->commentaire = strdup(buffer);//Faire cas ou y a pas de commentaire/
+
+
+if(strcmp(a->espece,"chien")==0){
+if(a->age < 2){
+a->quantites_nourriture = 500;
+}else{
+a->quantites_nourriture = (a->poids * 10)/100;
+}
+}else if(strcmp(a->espece,"chat")==0){
+if(a->age < 2){
+a->quantites_nourriture = 500;
+}else{
+a->quantites_nourriture = (a->poids * 10)/100;
+}
+}else if(strcmp(a->espece,"hamster")==0){
+a->quantites_nourriture = 20;
+
+}else if(strcmp(a->espece,"autruche")==0){
+a->quantites_nourriture = 2500;
+}
 
 return a;
 }
+
 
 
 
@@ -115,4 +144,30 @@ Animal** enlever_Animal(Animal **tableau, int *taille,int id){
       exit(1);
    }
    return tableau;
+}
+
+void rechercher_Animal(Animal **tableau, int *taille){
+int nb_r;
+printf("Veuillez saisir le nombre d'animaux que vous souhaitez rechercher:");
+scanf("%d",&nb_r);
+Animal **tab = (Animal**)malloc(nb_r*sizeof(Animal*);
+}
+
+void day_clean(Animal **tableau, int *taille){
+for(int i = 0 ; i < *taille ; i++){
+if(){
+
+else if(strcmp(tableau[i]->espece,"chien")==0){
+tableau[i]->travail_journalier = 5;
+tableau[i]->itravail_hedomadaire = 20;
+}else if(strcmp(tableau[i]->espece,"chat")==0){
+tableau[i]->travail_journalier = 10;
+tableau[i]->itravail_hedomadaire = 20;
+}else if(strcmp(tableau[i]->espece,"hamster")==0){
+tableau[i]->travail_journalier = 10;
+tableau[i]->itravail_hedomadaire = 20;
+}else if(strcmp(tableau[i]->espece,"autruche")==0){
+tableau[i]->travail_journalier = 20;
+tableau[i]->itravail_hedomadaire = 45;
+}
 }
