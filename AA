@@ -1,0 +1,101 @@
+void tableau_age(Animal **tableau, int *taille){
+int nb_chiens = 0, nb_chats = 0, nb_autruches = 0, nb_hamsters = 0, i, j;
+printf("Il y a %d animaux dans le refuge.\n",*taille);
+//Compteur du nombres d'animaux dans chaque espece//
+for(i = 0 ; i < *taille ; i++){
+   if(strcmp(tableau[i]->espece,"chien")==0){
+      nb_chiens++;
+   }else if(strcmp(tableau[i]->espece,"chat")==0){
+      nb_chats++;
+   }else if(strcmp(tableau[i]->espece,"autruche")==0){
+      nb_autruches++;
+   }else if(strcmp(tableau[i]->espece,"hamster")==0){
+      nb_hamsters++;
+   }
+}
+
+//Allocation de la memoire : chaque espece a un tableau //
+Animal **tableau_chiens = (Animal**)malloc(nb_chiens*sizeof(Animal*));
+Animal **tableau_chats = (Animal**)malloc(nb_chats*sizeof(Animal*));
+Animal **tableau_autruches = (Animal**)malloc(nb_autruches*sizeof(Animal*));
+Animal **tableau_hamsters = (Animal**)malloc(nb_hamsters*sizeof(Animal*));
+if(tableau_chiens == NULL || tableau_chats == NULL || tableau_autruches == NULL || tableau_hamsters == NULL ){
+   printf("Erreur d'allocation de la memoire.\n");
+   exit(1);
+}
+
+//Copie des informations de chaque animal tries par espece//
+int i_chiens = 0, i_chats = 0, i_autruches = 0, i_hamsters = 0;
+for(i = 0 ; i < *taille ; i++){
+if(strcmp(tableau[i]->espece,"chien")==0){
+    tableau_chiens[i_chiens] = tableau[i];
+    i_chiens++;
+}else if(strcmp(tableau[i]->espece,"chat")==0){
+    tableau_chats[i_chats] = tableau[i];
+    i_chats++;
+}else if(strcmp(tableau[i]->espece,"autruche")==0){
+    tableau_autruches[i_autruches] = tableau[i];
+    i_autruches++;
+}else if(strcmp(tableau[i]->espece,"hamster")==0){
+    tableau_hamsters[i_hamsters] = tableau[i];
+    i_hamsters++;
+}
+}
+
+//Trier chaque tableau par ordre croissant//
+for(i = 0 ; i < nb_chiens - 1 ; i++){
+    for(j = 0 ; j < nb_chiens - i - 1 ; j++){
+        if(tableau_chiens[j]->age > tableau_chiens[j+1]->age){
+            Animal *tmp_chiens = tableau_chiens[j];
+            tableau_chiens[j] = tableau_chiens[j+1];
+            tableau_chiens[j+1] = tmp_chiens;
+        }
+    }
+}
+for(i = 0 ; i < nb_chats - 1 ; i++){
+    for(j = 0 ; j < nb_chats - i - 1 ; j++){
+        if(tableau_chats[j]->age > tableau_chats[j+1]->age){
+            Animal *tmp_chats = tableau_chats[j];
+            tableau_chats[j] = tableau_chats[j+1];
+            tableau_chats[j+1] = tmp_chats;
+        }
+    }
+}
+for(i = 0 ; i < nb_autruches - 1 ; i++){
+    for(j = 0 ; j < nb_autruches - i - 1 ; j++){
+        if(tableau_autruches[j]->age > tableau_autruches[j+1]->age){
+            Animal *tmp_autruches = tableau_autruches[j];
+            tableau_autruches[j] = tableau_autruches[j+1];
+            tableau_autruches[j+1] = tmp_autruches;
+        }
+    }
+}
+for(i = 0 ; i < nb_hamsters - 1 ; i++){
+    for(j = 0 ; j < nb_hamsters - i - 1 ; j++){
+        if(tableau_hamsters[j]->age > tableau_hamsters[j+1]->age){
+            Animal *tmp_hamsters = tableau_hamsters[j];
+            tableau_hamsters[j] = tableau_hamsters[j+1];
+            tableau_hamsters[j+1] = tmp_hamsters;
+        }
+    }
+}
+
+//Affichage des tableaux des especes tries par age croissant//
+printf("Chiens tries par age\n");
+for(j = 0 ; j < nb_chiens ; j++){
+    printf("ID:%d|Age:%d\n",tableau_chiens[j]->id,tableau_chiens[j]->age);
+}
+printf("Chats tries par age\n");
+for(j = 0 ; j < nb_chats ; j++){
+    printf("ID:%d|Age:%d\n",tableau_chats[j]->id,tableau_chats[j]->age);
+}
+printf("Autruches tries par age\n");
+for(j = 0 ; j < nb_autruches ; j++){
+    printf("ID:%d|Age:%d\n",tableau_autruches[j]->id,tableau_autruches[j]->age);
+}
+printf("Hamsters tries par age\n");
+for(j = 0 ; j < nb_hamsters ; j++){
+    printf("ID:%d|Age:%d\n",tableau_hamsters[j]->id,tableau_hamsters[j]->age);
+}
+
+}
