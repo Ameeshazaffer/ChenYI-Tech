@@ -1,0 +1,36 @@
+typedef struct{
+    char* espece; 
+    int nb;
+}Tableau_espece;
+
+
+void tableau_espece(Animal **tableau, int *taille){
+int nb_chiens = 0, nb_chats = 0, nb_autruches = 0, nb_hamsters = 0, i, j;
+printf("Il y a %d animaux dans le refuge.\n",*taille);
+//Compteur du nombres d'animaux dans chaque espece//
+for(i = 0 ; i < *taille ; i++){
+   if(strcmp(tableau[i]->espece,"chien")==0){
+      nb_chiens++;
+   }else if(strcmp(tableau[i]->espece,"chat")==0){
+      nb_chats++;
+   }else if(strcmp(tableau[i]->espece,"autruche")==0){
+      nb_autruches++;
+   }else if(strcmp(tableau[i]->espece,"hamster")==0){
+      nb_hamsters++;
+   }
+}
+Tableau_espece tab[4] = {{"chien", nb_chiens},{"chat", nb_chats},{"autruche", nb_autruches},{"hamster", nb_hamsters}};
+for (int i = 0; i < 4 - 1; i++) {
+    for (int j = 0; j < 4 - i - 1; j++) {
+        if (tab[j].nb < tab[j+1].nb) {
+            Tableau_espece tmp = tab[j];
+            tab[j] = tab[j+1];
+            tab[j+1] = tmp;
+        }
+    }
+}
+printf("Nombre d’animaux de chaque espece (par ordre decroissant):\n");
+for(i = 0 ; i < 4 ; i++){
+    printf("%s : %d\n",tab[i].espece, tab[i].nb);
+}
+}
