@@ -1,0 +1,63 @@
+void rechercher_Animal(Animal **tableau, int *taille, char *nom, char* espece, char* type_age){
+int trouve = 0;
+for(int i = 0 ; i < *taille ; i++){
+if(strcmp(nom,"X")!=0){
+    if(strcmp(espece,"X")!=0){
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(nom,tableau[i]->nom)==0 && strcmp(espece,tableau[i]->espece)==0 && strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }else{
+            if(strcmp(nom,tableau[i]->nom)==0 && strcmp(espece,tableau[i]->espece)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }
+    }else{
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(nom,tableau[i]->nom)==0 && strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }else{
+            if(strcmp(nom,tableau[i]->nom)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }
+        
+    }
+    
+}else{
+    if(strcmp(espece,"X")!=0){
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(espece,tableau[i]->espece)==0 && strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+
+            }
+        }else{
+            if(strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+
+            }
+        }
+    }else{
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+
+            }
+        }
+        
+    }
+}
+
+}
+if(trouve==0){
+    printf("L'animal recherche n'a pas ete trouve.\n");
+}
+}
