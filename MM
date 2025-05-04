@@ -1,0 +1,380 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+typedef struct{
+   int num_id;
+   char* nom;
+   char* espece;
+   int naissance;
+   int age;
+   char* type_age;
+   float poids;
+   char* commentaire;
+   float quantites_nourriture;
+   int travail_journalier;
+   int travail_hebdomadaire;
+}Animal;
+
+typedef struct{
+    char* espece;
+    int nb;
+}Tableau_espece;
+
+typedef struct{
+    char* types_age;
+    int nb;
+}Tableau_age;
+
+typedef struct{
+    char* nom;
+    char* espece;
+    char* type_age;
+}Rechecher;
+
+
+int menu(){
+   int option;
+   printf("____________________________________________________________\n");
+   printf("Veuillez choisir l'action a realiser: \n");
+   printf("1.Rechercher un/des animaux. \n");
+   printf("2.Ajouter un animal. \n");
+   printf("3.Adopter un animal. \n");
+   printf("____________________________________________________________\n");
+   scanf("%d",&option);
+return option;
+}
+
+void afficher(Animal *a){
+    printf("____________________________________________________________\n");
+    printf("ID: %d\n",a->num_id);
+    printf("NOM : %s\n",a->nom);
+    printf("ESPECE : %s\n",a->espece);
+    printf("ANNEE DE NAISSANCE : %d\n",a->naissance);
+    printf("AGE : %d\n",a->age);
+    printf("POIDS : %.2f\n",a->poids);
+    printf("TYPE AGE : %s\n",a->type_age);
+    printf("QUANTITES DE NOURRITURES : %.2f\n",a->quantites_nourriture);
+    printf("TRAVAIL JOURNALIER : %d\n",a->travail_journalier);
+    printf("TRAVAIL HEBDOMADAIRE : %d\n",a->travail_hebdomadaire);
+    printf("COMMENTAIRE : %s\n",a->commentaire);
+    printf("____________________________________________________________\n");
+}
+
+
+int generer_id(Animal **tableau, int *taille){
+int id;
+int existe;
+do{
+    id = rand() % 100 + 1 ;
+    existe = 0;
+    for(int i = 0; i < *taille; i++) {
+        if(tableau[i]->num_id == id) {
+            existe = 1;
+            break;
+        }
+    }
+}while(existe);
+return id;
+}
+
+char* type_age(int age){
+if(age >= 0 && age <= 2){
+    return "bebe";
+}else if(age >= 3 && age <= 5){
+    return "junior";
+}else if(age >= 6 && age <= 9){
+    return "adulte";
+}else if(age >= 10){
+    return "senior";
+}
+}
+
+
+Animal* constructeur(Animal **tableau, int *taille){
+Animal *a = (Animal*)malloc(sizeof(Animal));
+if(a == NULL){
+   printf("Erreur d'allocation de la memoire./n");
+   exit(1);
+}
+a->num_id = generer_id(tableau,taille);
+printf("Veuillez saisir le nom (Avec majuscule): ");
+a->nom = (char*)malloc(50 * sizeof(char));
+scanf("%49s",a->nom);
+getchar();
+
+printf("Veuillez saisir l'espece (Sans majuscule): ");
+a->espece = (char*)malloc(50 * sizeof(char));
+scanf("%49s",a->espece);
+getchar();
+
+printf("Veuillez saisir l'annee de naissance: ");
+scanf("%d",&a->naissance);
+getchar();
+
+printf("Veuillez saisir le poids: ");
+scanf("%f",&a->poids);
+getchar();
+
+char buffer[256];
+printf("Veuillez saisir un commentaire (taper 'X' si vous ne voulez pas inclure de commentaire): ");
+fgets(buffer, 256, stdin);
+buffer[strcspn(buffer, "\n")] = '\0';
+a->commentaire = malloc(strlen(buffer) + 1); 
+strcpy(a->commentaire, buffer);
+
+a->age = 2025 - a->naissance;
+
+a->type_age = type_age(a->age);
+
+if(strcmp(a->espece,"chien")==0){
+    if(a->age < 2){
+        a->quantites_nourriture = 500;
+    }else{
+        a->quantites_nourriture = (a->poids * 10)/100;
+    }
+}else if(strcmp(a->espece,"chat")==0){
+    if(a->age < 2){
+        a->quantites_nourriture = 500;
+    }else{
+        a->quantites_nourriture = (a->poids * 10)/100;
+    }
+}else if(strcmp(a->espece,"hamster")==0){
+    a->quantites_nourriture = 20;
+}else if(strcmp(a->espece,"autruche")==0){
+    a->quantites_nourriture = 2500;
+}
+
+if(strcmp(a->espece,"chien")==0){
+    a->travail_journalier = 5;
+    a->travail_hebdomadaire = 20;
+}else if(strcmp(a->espece,"chat")==0){
+    a->travail_journalier = 10;
+    a->travail_hebdomadaire = 20;
+}else if(strcmp(a->espece,"hamster")==0){
+    a->travail_journalier = 10;
+    a->travail_hebdomadaire = 20;
+}else if(strcmp(a->espece,"autruche")==0){
+    a->travail_journalier = 20;
+    a->travail_hebdomadaire = 45;
+}
+afficher(a);
+
+return a;
+}
+
+
+
+
+Animal** ajouter_Animal(Animal **tableau, int *taille, Animal *a){
+if((*taille+1) >= 50){
+   printf("Il n'y a plus de place dans le refuge.\n");
+}else{
+   tableau = realloc(tableau,(*taille+1)*sizeof(Animal*));
+   tableau[*taille] = a;
+   (*taille)++;
+}
+   return tableau;
+}
+
+
+Animal** enlever_Animal(Animal **tableau, int *taille,int id){
+   int index = -1;
+
+   for(int i = 0 ; i < *taille ; i++){
+      if(tableau[i]->num_id == id){
+         index = i;
+         break;
+      }
+   }
+   if(index == -1){
+      printf("Cet animal n'a pas ete trouve.\n");
+   }else{
+      free(tableau[index]->nom);
+      free(tableau[index]->espece);
+      free(tableau[index]->commentaire);
+      free(tableau[index]);
+      for(int j = index ; j < (*taille-1) ; j++){
+         tableau[j] = tableau[j+1];
+      }
+   }
+
+   (*taille)--;
+   tableau = realloc(tableau,(*taille)*sizeof(Animal*));
+   if(tableau == NULL){
+      printf("Erreur d'allocation de la memoire./n");
+      exit(1);
+   }
+   return tableau;
+}
+
+void tableau_espece(Animal **tableau, int *taille){
+int nb_chiens = 0, nb_chats = 0, nb_autruches = 0, nb_hamsters = 0, i, j;
+printf("Il y a %d animaux dans le refuge.\n",*taille);
+for(i = 0 ; i < *taille ; i++){
+   if(strcmp(tableau[i]->espece,"chien")==0){
+      nb_chiens++;
+   }else if(strcmp(tableau[i]->espece,"chat")==0){
+      nb_chats++;
+   }else if(strcmp(tableau[i]->espece,"autruche")==0){
+      nb_autruches++;
+   }else if(strcmp(tableau[i]->espece,"hamster")==0){
+      nb_hamsters++;
+   }
+}
+Tableau_espece tab[4] = {{"chien", nb_chiens},{"chat", nb_chats},{"autruche", nb_autruches},{"hamster", nb_hamsters}};
+for (int i = 0; i < 4 - 1; i++) {
+    for (int j = 0; j < 4 - i - 1; j++) {
+        if (tab[j].nb < tab[j+1].nb) {
+            Tableau_espece tmp = tab[j];
+            tab[j] = tab[j+1];
+            tab[j+1] = tmp;
+        }
+    }
+}
+printf("____________________________________________________________\n");
+printf("Nombre d’animaux de chaque espece (par ordre decroissant):\n");
+for(i = 0 ; i < 4 ; i++){
+    printf("%s : %d\n",tab[i].espece, tab[i].nb);
+}
+}
+
+void tableau_age(Animal **tableau, int *taille){
+int nb_bebes = 0, nb_jeunes = 0, nb_adultes = 0, nb_seniors = 0, i, j;
+
+for(i = 0 ; i < *taille ; i++){
+   if(strcmp(tableau[i]->type_age,"bebe")==0){
+      nb_bebes++;
+   }else if(strcmp(tableau[i]->type_age,"junior")==0){
+      nb_jeunes++;
+   }else if(strcmp(tableau[i]->type_age,"adulte")==0){
+      nb_adultes++;
+   }else if(strcmp(tableau[i]->type_age,"senior")==0){
+      nb_seniors++;
+   }
+}
+Tableau_age tab[4] = {{"bebes", nb_bebes},{"jeunes", nb_jeunes},{"adultes", nb_adultes},{"seniors", nb_seniors}};
+printf("____________________________________________________________\n");
+printf("Nombre d’animaux par tranche d’age:\n");
+for(i = 0 ; i < 4 ; i++){
+    printf("%s : %d\n",tab[i].types_age, tab[i].nb);
+}
+printf("____________________________________________________________\n");
+}
+
+void rechercher_Animal(Animal **tableau, int *taille, char *nom, char* espece, char* type_age){
+int trouve = 0;
+for(int i = 0 ; i < *taille ; i++){
+if(strcmp(nom,"X")!=0){
+    if(strcmp(espece,"X")!=0){
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(nom,tableau[i]->nom)==0 && strcmp(espece,tableau[i]->espece)==0 && strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }else{
+            if(strcmp(nom,tableau[i]->nom)==0 && strcmp(espece,tableau[i]->espece)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }
+    }else{
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(nom,tableau[i]->nom)==0 && strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }else{
+            if(strcmp(nom,tableau[i]->nom)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+            }
+        }
+
+    }
+
+}else{
+    if(strcmp(espece,"X")!=0){
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(espece,tableau[i]->espece)==0 && strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+
+            }
+        }else{
+            if(strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+
+            }
+        }
+    }else{
+        if(strcmp(type_age,"X")!=0){
+            if(strcmp(type_age,tableau[i]->type_age)==0){
+                afficher(tableau[i]);
+                trouve = 1;
+
+            }
+        }
+
+    }
+}
+
+}
+if(trouve==0){
+    printf("L'animal recherche n'a pas ete trouve.\n");
+}
+}
+
+
+int main(){
+srand(time(NULL));
+printf("BIENVENUE AU CHENIL ChenYl-Tech !\n");
+Animal **refuge = malloc(sizeof(Animal*));
+int i, nb_r, choix, taille = 0,id;
+char continuer;
+do{
+choix = menu();
+if(choix == 1){
+    printf("Combien d'animaux souhaitez vous rechercher ?: ");
+    scanf("%d",&nb_r);
+    for(i = 0 ; i < nb_r ; i++){
+        char nom[50], espece[50], type_age[50];
+        printf("Veuillez saisir le nom de l'animal recherche: ");
+        scanf("%49s",nom);
+        printf("Veuillez saisir l'espece de l'animal recherche: ");
+        scanf("%49s",espece);
+        printf("Veuillez saisir la tranche d'age de l'animal recherche: (bebe < 2 ans, senior > 10 ans): ");
+        scanf("%49s",type_age);
+        rechercher_Animal(refuge,&taille,nom,espece,type_age);
+    }
+}else if(choix == 2){
+    Animal* a = constructeur(refuge,&taille);
+    refuge = ajouter_Animal(refuge,&taille,a);
+}else if(choix == 3){
+    printf("Veuillez saisir l'identifiant de l'animal a supprimer: ");
+    scanf("%d",&id);
+    refuge = enlever_Animal(refuge,&taille,id);
+}
+
+tableau_espece(refuge,&taille);
+tableau_age(refuge,&taille);
+printf("Souhaitez-vous continuer ?(O/N): ");
+scanf(" %c",&continuer);
+if(continuer=='N'){
+    printf("Merci pour votre visite!/n");
+    break;
+}
+}while(choix ==1 || choix ==2 || choix == 3);
+
+for(int i = 0; i < taille; i++) {
+        free(refuge[i]->nom);
+        free(refuge[i]->espece);
+        free(refuge[i]->commentaire);
+        free(refuge[i]);
+}
+free(refuge);
+
+return 0;
+}
