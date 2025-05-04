@@ -1,0 +1,277 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct{
+   int num_id;
+   char* nom;
+   char* espece;
+   int naissance;
+   int age;
+   float poids;
+   char* commentaire;
+   float quantites_nourriture;
+   int travail_journalier;
+   int travail_hedomadaire;
+}Animal;
+
+typedef struct{
+   Animal **tableau;
+}Refuge;
+
+int menu(){
+   int option;
+   printf("Veuillez choisir l'action a realiser.\n");
+   printf("1.Rechercher un/des animaux.\n");
+   printf("2.Ajouter un animal.\n");
+   printf("3.Adopter un animal.\n");
+   scanf("%d",&option);
+return option;
+}
+
+void afficher(Animal *a){
+   printf("ID: %d\n",a->num_id);
+   printf("NOM : %s\n",a->nom);
+   printf("ESPECE : %s\n",a->espece);
+   printf("DATE DE NAISSANCE : %d\n",a->naissance);
+   printf("DATE DE NAISSANCE : %d\n",a->age);
+   printf("POIDS : %.2f\n",a->poids);
+   printf("QUANTITES DE NOURRITURES : %.2f\n",a->quantites_nourriture);
+   printf("TRAVAIL JOURNALIER : %d\n",a->travail_journalier);
+   printf("TRAVAIL HEBDOMADAIRE : %d\n",a->travail_hebdomadaire);
+   printf("COMMENTAIRE : %s\n",a->commentaire);// faire cas ou y a pas de commentaire//
+}
+
+
+Animal* constructeur(){
+Animal *a = (Animal*)malloc(sizeof(Animal));
+if(a == NULL){
+   printf("Erreur d'allocation de la memoire./n");
+   exit(1);
+}
+
+char buffer[256];
+printf("Veuillez saisir le numero d’identification:");
+scanf("%d",&a->num_id);
+
+printf("Veuillez saisir le nom:");
+getchar();
+fgets(buffer, 256, stdin);
+buffer[strcspn(buffer, "\n")] = '\0';
+a->nom = strdup(buffer);
+
+printf("Veuillez saisir l'espece(sans majuscule):");
+getchar();
+fgets(buffer, 256, stdin);
+buffer[strcspn(buffer, "\n")] = '\0';
+a->espece = strdup(buffer);
+
+printf("Veuillez saisir l'annee de naissance:");
+scanf("%d",&a->naissance);
+a->age = 2025 - a->naissance;
+
+printf("Veuillez saisir le poids:");
+scanf("%f",&a->poids);
+
+printf("Veuillez saisir un commentaire (optionnel):");
+getchar();
+fgets(buffer, 256, stdin);
+buffer[strcspn(buffer, "\n")] = '\0';
+a->commentaire = strdup(buffer);//Faire cas ou y a pas de commentaire/
+
+
+if(strcmp(a->espece,"chien")==0){
+if(a->age < 2){
+a->quantites_nourriture = 500;
+}else{
+a->quantites_nourriture = (a->poids * 10)/100;
+}
+}else if(strcmp(a->espece,"chat")==0){
+if(a->age < 2){
+a->quantites_nourriture = 500;
+}else{
+a->quantites_nourriture = (a->poids * 10)/100;
+}
+}else if(strcmp(a->espece,"hamster")==0){
+a->quantites_nourriture = 20;
+
+}else if(strcmp(a->espece,"autruche")==0){
+a->quantites_nourriture = 2500;
+}
+
+return a;
+}
+
+
+
+
+Animal** ajouter_Animal(Animal **tableau, int *taille, Animal *a){
+if((*taille+1) >= 50){
+   printf("Il n'y a plus de place dans le refuge.\n");
+}else{
+   tableau = realloc(tableau,(*taille+1)*sizeof(Animal*));
+   tableau[*taille] = a;
+   (*taille)++;
+}
+   return tableau;
+}
+
+
+Animal** enlever_Animal(Animal **tableau, int *taille,int id){
+   int index = -1;
+
+   for(int i = 0 ; i < *taille ; i++){
+      if(tableau[i]->num_id == id){
+         index = i;
+         break;
+      }
+   }
+   if(index == -1){
+      printf("Cet animal n'a pas ete trouve.\n");
+   }else{
+      free(tableau[index]->nom);
+      free(tableau[index]->espece);
+      free(tableau[index]->commentaire);
+      free(tableau[index]);
+      for(int j = index ; j < (*taille-1) ; j++){
+         tableau[j] = tableau[j+1];
+      }
+   }
+
+   (*taille)--;
+   tableau = realloc(tableau,(*taille)*sizeof(Animal*));
+   if(tableau == NULL){
+      printf("Erreur d'allocation de la memoire./n");
+      exit(1);
+   }
+   return tableau;
+}
+
+void day_clean(Animal **tableau, int *taille){
+for(int i = 0 ; i < *taille ; i++){
+if(strcmp(tableau[i]->espece,"chien")==0){
+tableau[i]->travail_journalier = 5;
+tableau[i]->travail_hedomadaire = 20;
+}else if(strcmp(tableau[i]->espece,"chat")==0){
+tableau[i]->travail_journalier = 10;
+tableau[i]->travail_hedomadaire = 20;
+}else if(strcmp(tableau[i]->espece,"hamster")==0){
+tableau[i]->travail_journalier = 10;
+tableau[i]->travail_hedomadaire = 20;
+}else if(strcmp(tableau[i]->espece,"autruche")==0){
+tableau[i]->travail_journalier = 20;
+tableau[i]->travail_hedomadaire = 45;
+}
+}
+}
+
+typedef struct{
+    char* espece; 
+    int nb;
+}Tableau_espece;
+
+
+void tableau_espece(Animal **tableau, int *taille){
+int nb_chiens = 0, nb_chats = 0, nb_autruches = 0, nb_hamsters = 0, i, j;
+printf("Il y a %d animaux dans le refuge.\n",*taille);
+//Compteur du nombres d'animaux dans chaque espece//
+for(i = 0 ; i < *taille ; i++){
+   if(strcmp(tableau[i]->espece,"chien")==0){
+      nb_chiens++;
+   }else if(strcmp(tableau[i]->espece,"chat")==0){
+      nb_chats++;
+   }else if(strcmp(tableau[i]->espece,"autruche")==0){
+      nb_autruches++;
+   }else if(strcmp(tableau[i]->espece,"hamster")==0){
+      nb_hamsters++;
+   }
+}
+Tableau_espece tab[4] = {{"chien", nb_chiens},{"chat", nb_chats},{"autruche", nb_autruches},{"hamster", nb_hamsters}};
+for (int i = 0; i < 4 - 1; i++) {
+    for (int j = 0; j < 4 - i - 1; j++) {
+        if (tab[j].nb < tab[j+1].nb) {
+            Tableau_espece tmp = tab[j];
+            tab[j] = tab[j+1];
+            tab[j+1] = tmp;
+        }
+    }
+}
+printf("Nombre d’animaux de chaque espece (par ordre decroissant):\n");
+for(i = 0 ; i < 4 ; i++){
+    printf("%s : %d\n",tab[i].espece, tab[i].nb);
+}
+}
+
+
+typedef struct{
+    char* types_age; 
+    int nb;
+}Tableau_age;
+
+
+void tableau_age(Animal **tableau, int *taille){
+int nb_bebes = 0, nb_jeunes = 0, nb_adultes = 0, nb_seniors = 0, i, j;
+printf("Il y a %d animaux dans le refuge.\n",*taille);
+int ages[*taille];
+for(i = 0 ; i < *taille ; i++){
+    ages[i] = tableau[i]->age;
+}
+
+for(i = 0; i < (*taille) - 1; i++) {
+    for (j = 0; j < (*taille) - i - 1; j++) {
+        if (ages[j] < ages[j+1]) {
+            int tmp = ages[j];
+            ages[j] = ages[j+1];
+            ages[j+1] = tmp;
+        }
+    }
+}
+
+int q1 = (*taille) / 4;
+int q2 = (*taille) / 2;
+int q3 = 3 * (*taille) / 4;
+
+for(i = 0 ; i < *taille ; i++){
+    if (ages[i] >= ages[q3]) {
+        nb_bebes++;
+    } else if (ages[i] >= ages[q2]) {
+        nb_jeunes++;
+    } else if (ages[i] >= ages[q1]) {
+        nb_adultes++;
+    } else {
+        nb_seniors++;
+    }
+}
+
+
+Tableau_age t[4] = {{"bebes", nb_bebes},{"jeunes", nb_jeunes},{"adultes", nb_adultes},{"seniors", nb_seniors}};
+printf("Nombre d’animaux par tranche d’age(affichage par quartile):\n");
+for(i = 0 ; i < 4 ; i++){
+    printf("%s : %d\n",t[i].types_age, t[i].nb);
+}
+}
+
+
+
+
+
+void rechercher_Animal(Animal **tableau, int *taille){
+int nb_r;
+printf("Veuillez saisir le nombre d'animaux que vous souhaitez rechercher:");
+scanf("%d",&nb_r);
+
+}
+
+
+
+
+
+int main(){
+
+
+
+
+
+
+return 0;
+}
