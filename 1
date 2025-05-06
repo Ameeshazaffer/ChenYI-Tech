@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>  
+#include <time.h>    
+
+#include "animal.h"
+#include "refuge.h"
+
+
+
+int menu() {
+int option;
+printf("____________________________________________________________\n");
+printf("Veuillez choisir l'action a realiser:\n");
+printf("1. Rechercher un/des animaux.\n");
+printf("2. Ajouter un animal.\n");
+printf("3. Adopter un animal.\n");
+printf("____________________________________________________________\n");
+scanf("%d", &option);
+    return option;
+}
+
+int main() {
+srand(time(NULL));
+printf("BIENVENUE AU CHENIL ChenYl-Tech !\n");
+Animal **refuge = malloc(sizeof(Animal*));
+int i, nb_r, choix, taille = 0, id;
+char continuer;
+do {
+    choix = menu();
+    if(choix == 1){
+        printf("Combien d'animaux souhaitez-vous rechercher ? : ");
+        scanf("%d", &nb_r);
+        printf("Veuillez saisir au minimum deux parametres de recherche.\n");
+        for(i = 0; i < nb_r; i++){
+            char nom[50], espece[50], type_age[50];
+            int nb_p;
+            do{
+                nb_p = 0;
+                printf("Veuillez saisir le nom de l'animal recherche : ");
+                scanf("%49s", nom);
+                if(strcmp(nom, "X") != 0){
+                    nb_p++;
+                }
+                printf("Veuillez saisir l'espèce de l'animal recherche : ");
+                scanf("%49s", espece);
+                if (strcmp(espece, "X") != 0){
+                    nb_p++;
+                }
+                printf("Veuillez saisir la tranche d'age de l'animal recherche (bebe < 2 ans, senior > 10 ans) : ");
+                scanf("%49s", type_age);
+                if(strcmp(type_age, "X") != 0){
+                    nb_p++;
+                }
+                if(nb_p < 2){
+                    printf("Veuillez remplir au moins deux champs pour effectuer une recherche valide.\n");
+                }
+                }while(nb_p < 2);
+                rechercher_Animal(refuge, taille, nom, espece, type_age);
+            }
+    }else if(choix == 2){
+        Animal *a = constructeur(refuge, taille);
+        refuge = ajouter_Animal(refuge, &taille, a);
+    }else if(choix == 3){
+        printf("Veuillez saisir l'identifiant de l'animal a supprimer : ");
+        scanf("%d", &id);
+        refuge = enlever_Animal(refuge, &taille, id);
+    }else{
+        printf("Option invalide.\n");
+    }
+    tableau_espece(refuge, taille);
+    tableau_age(refuge, taille);
+    do{
+        printf("Souhaitez-vous effectuer une autre action ? (O/N) : ");
+        scanf(" %c", &continuer);
+    }while(continuer != 'O' && continuer != 'o' && continuer != 'N' && continuer != 'n');
+}while(continuer == 'O' || continuer == 'o');
+
+printf("Merci pour votre visite !\n");
+
+for(int i = 0; i < taille; i++){
+    free(refuge[i]->nom);
+    free(refuge[i]->espece);
+    free(refuge[i]->commentaire);
+    free(refuge[i]);
+}
+free(refuge);
+
+    return 0;
+}
