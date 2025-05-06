@@ -1,0 +1,36 @@
+#ifndef ANIMAL_H
+#define ANIMAL_H
+
+typedef struct {
+    int   num_id;
+    char* nom;
+    char* espece;
+    int   naissance;
+    int   age;
+    char* type_age;
+    float poids;
+    char* commentaire;
+    float quantites_nourriture;
+    int   travail_journalier;
+    int   travail_hebdomadaire;
+} Animal;
+
+typedef struct {
+    char* espece;
+    int   nb;
+} Tableau_espece;
+
+typedef struct {
+    char* types_age;
+    int   nb;
+} Tableau_age;
+
+int generer_id(Animal **tableau, int taille);
+char* type_age(int age);
+void afficher_Animal(Animal *a);
+Animal* constructeur(Animal **tableau, int taille);
+Animal** ajouter_Animal(Animal **tableau, int *taille, Animal *a);
+Animal** enlever_Animal(Animal **tableau, int *taille, int id);
+void rechercher_Animal(Animal **tableau, int taille, char *nom, char *espece, char *type_age);
+
+#endif
