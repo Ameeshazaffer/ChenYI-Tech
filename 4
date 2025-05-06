@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+#include "animal.h"
+#include "refuge.h"
+
+void tableau_espece(Animal **tableau, int taille){
+int nb_chiens = 0, nb_chats = 0, nb_autruches = 0, nb_hamsters = 0, i, j;
+printf("Il y a %d animal/animaux dans le refuge.\n", taille);
+for(i = 0; i < taille; i++){
+    if(strcmp((*(tableau + i))->espece, "chien") == 0){
+        nb_chiens++;
+    }else if (strcmp((*(tableau + i))->espece, "chat") == 0){
+        nb_chats++;
+    }else if (strcmp((*(tableau + i))->espece, "autruche") == 0){
+        nb_autruches++;
+    }else if (strcmp((*(tableau + i))->espece, "hamster") == 0){
+        nb_hamsters++;
+    }
+}
+
+Tableau_espece tab[4] = {{"chien", nb_chiens}, {"chat", nb_chats}, {"autruche", nb_autruches}, {"hamster", nb_hamsters}};
+for(i = 0; i < 4 - 1; i++){
+    for(j = 0; j < 4 - i - 1; j++){
+        if(tab[j].nb < tab[j + 1].nb){
+            Tableau_espece tmp = tab[j];
+            tab[j] = tab[j + 1];
+            tab[j + 1] = tmp;
+        }
+    }
+}
+printf("____________________________________________________________\n");
+printf("Nombre d'animaux de chaque espece (par ordre decroissant):\n");
+for(i = 0; i < 4; i++){
+    printf("%s : %d\n", tab[i].espece, tab[i].nb);
+}
+}
+
+void tableau_age(Animal **tableau, int taille){
+int nb_bebes = 0, nb_jeunes = 0, nb_adultes = 0, nb_seniors = 0, i, j;
+for(i = 0; i < taille; i++){
+    if(strcmp((*(tableau + i))->type_age, "bebe") == 0) {
+        nb_bebes++;
+    }else if(strcmp((*(tableau + i))->type_age, "jeune") == 0) {
+        nb_jeunes++;
+    }else if(strcmp((*(tableau + i))->type_age, "adulte") == 0) {
+        nb_adultes++;
+    }else if(strcmp((*(tableau + i))->type_age, "senior") == 0) {
+        nb_seniors++;
+    }
+}
+Tableau_age tab[4] = {{"bebes", nb_bebes}, {"jeunes", nb_jeunes}, {"adultes", nb_adultes}, {"seniors", nb_seniors}};
+printf("____________________________________________________________\n");
+printf("Nombre d'animaux par tranche d'age:\n");
+for(i = 0; i < 4; i++){
+    printf("%s : %d\n", tab[i].types_age, tab[i].nb);
+}
+printf("____________________________________________________________\n");
+}
+
